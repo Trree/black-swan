@@ -40,7 +40,7 @@ class Config:
             'priority': 1
         },
         'bloomberg': {
-            'url': 'https://www.bloomberg.com/markets',
+            'url': 'https://mktnews.net/',
             'type': 'financial',
             'priority': 1
         },

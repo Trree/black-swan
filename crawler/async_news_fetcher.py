@@ -1,9 +1,7 @@
-import aiohttp
-import asyncio
-from bs4 import BeautifulSoup
-from urllib.parse import urlparse
 import datetime
 from typing import List, Dict
+
+import aiohttp
 
 
 class AsyncNewsFetcher:

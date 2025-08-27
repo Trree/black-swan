@@ -1,0 +1,69 @@
+import requests
+from bs4 import BeautifulSoup
+from typing import List, Dict, Any
+
+# 假设 NewsItem 是一个 dict，实际项目可用 dataclass 或 pydantic 等替代
+NewsItem = Dict[str, Any]
+
+def fetch_html(url: str) -> str:
+    response = requests.get(url)
+    response.raise_for_status()
+    return response.text
+
+def fastbull_express() -> List[NewsItem]:
+    base_url = "https://www.fastbull.com"
+    html = fetch_html(f"{base_url}/cn/express-news")
+    soup = BeautifulSoup(html, "html.parser")
+    news_list = soup.select(".news-list")
+    news: List[NewsItem] = []
+
+    for el in news_list:
+        a = el.select_one(".title_name")
+        if a is None:
+            continue
+        url = a.get("href")
+        title_text = a.get_text()
+        import re
+        match = re.search(r"【(.+)】", title_text)
+        title = match.group(1) if match else title_text
+        date = el.get("data-date")
+        if url and title and date:
+            news.append({
+                "url": base_url + url,
+                "title": title if len(title) >= 4 else title_text,
+                "id": url,
+                "pubDate": int(date),
+            })
+    print(news)
+    return news
+
+def fastbull_news() -> List[NewsItem]:
+    base_url = "https://www.fastbull.com"
+    html = fetch_html(f"{base_url}/cn/news")
+    soup = BeautifulSoup(html, "html.parser")
+    trending = soup.select(".trending_type")
+    news: List[NewsItem] = []
+
+    for el in trending:
+        a = el
+        url = a.get("href")
+        title = a.select_one(".title")
+        title_text = title.get_text() if title else ""
+        date_elem = a.select_one("[data-date]")
+        date = date_elem.get("data-date") if date_elem else None
+        if url and title_text and date:
+            news.append({
+                "url": base_url + url,
+                "title": title_text,
+                "id": url,
+                "pubDate": int(date),
+            })
+    print(news)
+    return news
+
+def get_fastbull_sources():
+    return {
+        "fastbull": fastbull_express,
+        "fastbull-express": fastbull_express,
+        "fastbull-news": fastbull_news,
+    }

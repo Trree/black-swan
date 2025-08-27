@@ -3,8 +3,9 @@ from typing import Dict
 import numpy as np
 from sentence_transformers import SentenceTransformer
 
-from nlp.gpt_classifier import GPTBlackSwanClassifier
 from config import Config
+from nlp.gpt_classifier import GPTBlackSwanClassifier
+
 
 class EnhancedNewsProcessor:
     def __init__(self):

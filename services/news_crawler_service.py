@@ -1,11 +1,10 @@
-import aiohttp
 import asyncio
-from bs4 import BeautifulSoup
-from urllib.parse import urlparse
 import datetime
-from typing import List, Dict, Optional
 import random
-import time
+from typing import List, Dict
+
+import aiohttp
+from bs4 import BeautifulSoup
 
 from config import config
 from logging_config import logger
@@ -179,3 +178,4 @@ class NewsCrawlerService:
 
 # 全局爬虫服务实例
 crawler_service = NewsCrawlerService()
+asyncio.run((crawler_service.crawl_all_sources()))
