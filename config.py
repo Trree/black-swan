@@ -13,6 +13,8 @@ class Config:
     OPENAI_MAX_TOKENS = 1000
     OPENAI_TEMPERATURE = 0.1
 
+    RSSHUB_URL = os.getenv("RSSHUB_URL", "http://106.13.122.211:1200/")
+
     # 数据库配置
     DATABASE_URL = "sqlite:///news.db"
 
