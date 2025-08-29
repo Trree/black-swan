@@ -35,10 +35,4 @@ def get_hot_stocks():
             })
     return results
 
-# 提供与原 defineSource 类似的接口
-def xueqiu_source():
-    return {
-        "xueqiu": get_hot_stocks,
-        "xueqiu-hotstock": get_hot_stocks,
-    }
 

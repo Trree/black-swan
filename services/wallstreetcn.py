@@ -1,14 +1,15 @@
+import asyncio
 from typing import List, Dict, Any, Optional
 import requests
+from watchfiles import awatch
 
-def my_fetch(url: str) -> Any:
-    response = requests.get(url)
-    response.raise_for_status()
-    return response.json()
+from crawler.async_news_fetcher import fetch_url_json
 
-def wallstreetcn_live() -> List[Dict[str, Any]]:
+
+
+async def wall_streetcn_live() -> List[Dict[str, Any]]:
     api_url = "https://api-one.wallstcn.com/apiv1/content/lives?channel=global-channel&limit=30"
-    res = my_fetch(api_url)
+    res = await fetch_url_json(api_url)
     items = res.get('data', {}).get('items', [])
     return [
         {
@@ -22,9 +23,9 @@ def wallstreetcn_live() -> List[Dict[str, Any]]:
         for k in items
     ]
 
-def wallstreetcn_news() -> List[Dict[str, Any]]:
+async def wallstreetcn_news() -> List[Dict[str, Any]]:
     api_url = "https://api-one.wallstcn.com/apiv1/content/information-flow?channel=global-channel&accept=article&limit=30"
-    res = my_fetch(api_url)
+    res = await fetch_url_json(api_url)
     items = res.get('data', {}).get('items', [])
     result = []
     for k in items:
@@ -41,9 +42,9 @@ def wallstreetcn_news() -> List[Dict[str, Any]]:
             })
     return result
 
-def wallstreetcn_hot() -> List[Dict[str, Any]]:
+async def wallstreetcn_hot() -> List[Dict[str, Any]]:
     api_url = "https://api-one.wallstcn.com/apiv1/content/articles/hot?period=all"
-    res = my_fetch(api_url)
+    res = await fetch_url_json(api_url)
     day_items = res.get('data', {}).get('day_items', [])
     return [
         {
@@ -56,12 +57,13 @@ def wallstreetcn_hot() -> List[Dict[str, Any]]:
 
 def define_source():
     return {
-        "wallstreetcn": wallstreetcn_live,
-        "wallstreetcn-quick": wallstreetcn_live,
-        "wallstreetcn-news": wallstreetcn_news,
-        "wallstreetcn-hot": wallstreetcn_hot,
+        "wallstreetcn": asyncio.run(wall_streetcn_live()),
+        "wallstreetcn-quick": asyncio.run(wall_streetcn_live()),
+        "wallstreetcn-news": asyncio.run(wallstreetcn_news()),
+        "wallstreetcn-hot": asyncio.run(wallstreetcn_hot()),
     }
 
 # Example usage:
 sources = define_source()
-print(sources["wallstreetcn"]())
+if __name__ == "__main__":
+    print(define_source())

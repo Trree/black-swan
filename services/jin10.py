@@ -1,8 +1,13 @@
-import requests
+import asyncio
 import re
 import time
-from typing import Optional, List, Dict, Any
 from datetime import datetime, timedelta, timezone
+from typing import List, Dict, Any
+
+import requests
+
+from crawler.async_news_fetcher import fetch_url
+
 
 def parse_relative_date(time_str: str, tz: str = "Asia/Shanghai") -> datetime:
     # 假设 time_str 是形如 "18:24:05" 或 "08-27 18:24:05"（金十快讯格式）
@@ -21,11 +26,11 @@ def parse_relative_date(time_str: str, tz: str = "Asia/Shanghai") -> datetime:
             dt = now
     return dt
 
-def fetch_jin10_news() -> List[Dict[str, Any]]:
+async def fetch_jin10_news() -> List[Dict[str, Any]]:
     timestamp = int(time.time() * 1000)
     url = f"https://www.jin10.com/flash_newest.js?t={timestamp}"
-    resp = requests.get(url)
-    raw_data = resp.text
+    resp = await fetch_url(url)
+    raw_data = resp
 
     # 移除开头的变量声明和末尾的分号
     json_str = re.sub(r'^var\s+newest\s*=\s*', '', raw_data)
@@ -63,6 +68,6 @@ def fetch_jin10_news() -> List[Dict[str, Any]]:
         result.append(item)
     return result
 
-# Example usage:
-news_items = fetch_jin10_news()
-print(news_items)
+if __name__ == "__main__":
+    news_items = asyncio.run(fetch_jin10_news())
+    print(news_items)

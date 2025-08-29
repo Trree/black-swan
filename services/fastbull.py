@@ -1,18 +1,17 @@
+import asyncio
+
 import requests
 from bs4 import BeautifulSoup
 from typing import List, Dict, Any
 
+from crawler.async_news_fetcher import fetch_url
+
 # 假设 NewsItem 是一个 dict，实际项目可用 dataclass 或 pydantic 等替代
 NewsItem = Dict[str, Any]
 
-def fetch_html(url: str) -> str:
-    response = requests.get(url)
-    response.raise_for_status()
-    return response.text
-
-def fastbull_express() -> List[NewsItem]:
+async def fastbull_express() -> List[NewsItem]:
     base_url = "https://www.fastbull.com"
-    html = fetch_html(f"{base_url}/cn/express-news")
+    html = await fetch_url(f"{base_url}/cn/express-news")
     soup = BeautifulSoup(html, "html.parser")
     news_list = soup.select(".news-list")
     news: List[NewsItem] = []
@@ -34,12 +33,11 @@ def fastbull_express() -> List[NewsItem]:
                 "id": url,
                 "pubDate": int(date),
             })
-    print(news)
     return news
 
-def fastbull_news() -> List[NewsItem]:
+async def fastbull_news() -> List[NewsItem]:
     base_url = "https://www.fastbull.com"
-    html = fetch_html(f"{base_url}/cn/news")
+    html = await fetch_url(f"{base_url}/cn/news")
     soup = BeautifulSoup(html, "html.parser")
     trending = soup.select(".trending_type")
     news: List[NewsItem] = []
@@ -63,7 +61,10 @@ def fastbull_news() -> List[NewsItem]:
 
 def get_fastbull_sources():
     return {
-        "fastbull": fastbull_express,
-        "fastbull-express": fastbull_express,
-        "fastbull-news": fastbull_news,
+        "fastbull": asyncio.run(fastbull_express()),
+        "fastbull-express": asyncio.run(fastbull_express()),
+        "fastbull-news": asyncio.run(fastbull_news()),
     }
+
+if __name__ == "__main__":
+    print(asyncio.run(fastbull_express()))

@@ -1,6 +1,11 @@
+import asyncio
+
 import requests
 from bs4 import BeautifulSoup
 from typing import List, Dict, Any
+
+from crawler.async_news_fetcher import fetch_url
+
 
 def parse_relative_date(relatieve_time: str, timezone: str) -> int:
     # 这里你需要根据 relatieve_time 和 timezone 实现时间解析逻辑

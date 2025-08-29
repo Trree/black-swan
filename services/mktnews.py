@@ -1,5 +1,8 @@
-import requests
-from typing import List, Dict, Any
+import asyncio
+from typing import Dict, Any
+
+from crawler.async_news_fetcher import fetch_url_json
+
 
 class Report:
     def __init__(self, data: Dict[str, Any], report_type: str):
@@ -9,9 +12,9 @@ class Report:
         self.extra = {"info": report_type}
         self.url = f"https://mktnews.net/flashDetail.html?id={self.id}"
 
-def fetch_mktnews():
+async def fetch_mktnews():
     url = "https://api.mktnews.net/api/flash/host"
-    res = requests.get(url).json()
+    res = await fetch_url_json(url)
 
     categories = ["policy", "AI", "financial"]
     type_map = {"policy": "Policy", "AI": "AI", "financial": "Financial"}
@@ -40,6 +43,5 @@ def fetch_mktnews():
         })
     return result
 
-# Example usage:
-news = fetch_mktnews()
-print(news)
+if __name__ == "__main__":
+    print(asyncio.run(fetch_mktnews()))

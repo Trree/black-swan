@@ -7,7 +7,6 @@ from logging_config import logger
 from scheduler.task_scheduler import task_scheduler
 from services.news_crawler_service import crawler_service
 from nlp.processor import EnhancedNewsProcessor
-from models.news import NewsArticle, Base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
