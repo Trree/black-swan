@@ -1,16 +1,24 @@
-import asyncio
-
-import requests
-from bs4 import BeautifulSoup
 from typing import List, Dict, Any
 
-from crawler.async_news_fetcher import fetch_url
+import dateparser
+import requests
+from bs4 import BeautifulSoup
 
 
-def parse_relative_date(relatieve_time: str, timezone: str) -> int:
-    # 这里你需要根据 relatieve_time 和 timezone 实现时间解析逻辑
-    # 目前返回 0 作为占位符
-    return 0
+def parse_relative_time(relative_str):
+    """
+    使用 dateparser 解析相对时间字符串。
+
+    参数:
+        relative_str (str): 相对时间字符串。
+
+    返回:
+        datetime: 解析得到的绝对时间。
+    """
+    absolute_time = dateparser.parse(relative_str)
+    if absolute_time is None:
+        raise ValueError(f"无法解析字符串: {relative_str}")
+    return absolute_time
 
 def fetch_news() -> List[Dict[str, Any]]:
     base_url = "https://www.gelonghui.com"
@@ -22,23 +30,27 @@ def fetch_news() -> List[Dict[str, Any]]:
 
     for el in soup.select(".article-content"):
         a = el.select_one(".detail-right > a")
+        time_p = el.find("p", class_="time")
         if a:
             url = a.get("href")
-            title = a.find("h2").get_text() if a.find("h2") else ""
-            info = el.select_one(".time > span:nth-child(1)")
-            info_text = info.get_text() if info else ""
-            relatieve_time_elem = el.select_one(".time > span:nth-child(3)")
-            relatieve_time = relatieve_time_elem.get_text() if relatieve_time_elem else ""
+            title = a.find("h2").get_text(strip=True) if a.find("h2") else ""
+            summary_tag = a.find("summary")
+            info_text = summary_tag.get_text(strip=True) if summary_tag else None
+            if time_p :
+                time_spans = time_p.find_all("span")
+                time_text_str = time_spans[-1].get_text(strip=True) if time_spans else None
+                time_text_p = parse_relative_time(time_text_str)
+                time_text = time_text_p.strftime('%Y-%m-%d %H:%M:%S')
 
-            if url and title and relatieve_time:
+            else:
+                time_text = ""
+
+            if url and title:
                 news_items.append({
-                    "url": base_url + url,
                     "title": title,
-                    "id": url,
-                    "extra": {
-                        "date": parse_relative_date(relatieve_time, "Asia/Shanghai"),
-                        "info": info_text,
-                    },
+                    "link": base_url + url,
+                    "description": info_text,
+                    "pubDate": time_text,
                 })
     return news_items
 

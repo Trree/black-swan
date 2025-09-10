@@ -5,7 +5,7 @@ from typing import List, Dict
 from config import config
 from logging_config import logger
 from scheduler.task_scheduler import task_scheduler
-from services.news_crawler_service import crawler_service
+
 from nlp.processor import EnhancedNewsProcessor
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -62,7 +62,8 @@ class NewsMonitorApp:
 
         try:
             # 抓取新闻
-            news_items = await crawler_service.crawl_all_sources()
+            #news_items = await crawler_service.crawl_all_sources()
+            news_items = []
             logger.info(f"抓取到 {len(news_items)} 条新闻")
 
             # 处理新闻

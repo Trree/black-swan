@@ -1,10 +1,7 @@
 import asyncio
-from typing import List, Dict, Any, Optional
-import requests
-from watchfiles import awatch
+from typing import List, Dict, Any
 
 from crawler.async_news_fetcher import fetch_url_json
-
 
 
 async def wall_streetcn_live() -> List[Dict[str, Any]]:
@@ -58,7 +55,6 @@ async def wallstreetcn_hot() -> List[Dict[str, Any]]:
 def define_source():
     return {
         "wallstreetcn": asyncio.run(wall_streetcn_live()),
-        "wallstreetcn-quick": asyncio.run(wall_streetcn_live()),
         "wallstreetcn-news": asyncio.run(wallstreetcn_news()),
         "wallstreetcn-hot": asyncio.run(wallstreetcn_hot()),
     }

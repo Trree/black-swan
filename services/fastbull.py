@@ -1,14 +1,15 @@
 import asyncio
-
-import requests
-from bs4 import BeautifulSoup
 from typing import List, Dict, Any
+
+from bs4 import BeautifulSoup
 
 from crawler.async_news_fetcher import fetch_url
 
 # 假设 NewsItem 是一个 dict，实际项目可用 dataclass 或 pydantic 等替代
 NewsItem = Dict[str, Any]
 
+
+# todo 查询快讯
 async def fastbull_express() -> List[NewsItem]:
     base_url = "https://www.fastbull.com"
     html = await fetch_url(f"{base_url}/cn/express-news")
@@ -28,9 +29,8 @@ async def fastbull_express() -> List[NewsItem]:
         date = el.get("data-date")
         if url and title and date:
             news.append({
-                "url": base_url + url,
                 "title": title if len(title) >= 4 else title_text,
-                "id": url,
+                "link": base_url + url,
                 "pubDate": int(date),
             })
     return news
@@ -47,16 +47,18 @@ async def fastbull_news() -> List[NewsItem]:
         url = a.get("href")
         title = a.select_one(".title")
         title_text = title.get_text() if title else ""
+        # 获取 brief ltr_ar_dir 内容
+        brief_p = a.find("p", class_="brief ltr_ar_dir")
+        brief = brief_p.get_text(strip=True) if brief_p else None
         date_elem = a.select_one("[data-date]")
         date = date_elem.get("data-date") if date_elem else None
         if url and title_text and date:
             news.append({
-                "url": base_url + url,
                 "title": title_text,
-                "id": url,
+                "link": base_url + url,
+                "description": brief,
                 "pubDate": int(date),
             })
-    print(news)
     return news
 
 def get_fastbull_sources():
