@@ -64,7 +64,6 @@ async def fastbull_news() -> List[NewsItem]:
 def get_fastbull_sources():
     return {
         "fastbull": asyncio.run(fastbull_express()),
-        "fastbull-express": asyncio.run(fastbull_express()),
         "fastbull-news": asyncio.run(fastbull_news()),
     }
 

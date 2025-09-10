@@ -52,7 +52,7 @@ async def wallstreetcn_hot() -> List[Dict[str, Any]]:
         for h in day_items
     ]
 
-def define_source():
+def get_wallstree():
     return {
         "wallstreetcn": asyncio.run(wall_streetcn_live()),
         "wallstreetcn-news": asyncio.run(wallstreetcn_news()),
@@ -60,6 +60,6 @@ def define_source():
     }
 
 # Example usage:
-sources = define_source()
+
 if __name__ == "__main__":
-    print(define_source())
+    print(wallstreetcn_news())

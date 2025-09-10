@@ -41,7 +41,7 @@ async def fetch_mktnews():
             "extra": report.extra,
             "url": report.url,
         })
-    return result
+    return {"mkt" : result}
 
 if __name__ == "__main__":
     print(asyncio.run(fetch_mktnews()))

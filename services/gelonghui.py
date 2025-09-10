@@ -20,7 +20,7 @@ def parse_relative_time(relative_str):
         raise ValueError(f"无法解析字符串: {relative_str}")
     return absolute_time
 
-def fetch_news() -> List[Dict[str, Any]]:
+def fetch_gelonghui() :
     base_url = "https://www.gelonghui.com"
     response = requests.get("https://www.gelonghui.com/news/")
     response.raise_for_status()
@@ -52,10 +52,10 @@ def fetch_news() -> List[Dict[str, Any]]:
                     "description": info_text,
                     "pubDate": time_text,
                 })
-    return news_items
+    return {"gelonghui" : news_items}
 
 # 示例用法
 if __name__ == "__main__":
-    news = fetch_news()
+    news = fetch_gelonghui()
     for item in news:
         print(item)

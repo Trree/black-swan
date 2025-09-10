@@ -33,6 +33,8 @@ def get_hot_stocks():
                     "info": f"{k['percent']}% {k['exchange']}",
                 }
             })
-    return results
+    return {"xueqiu": results}
 
 
+if __name__ == "__main__":
+    print(get_hot_stocks())

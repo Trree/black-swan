@@ -26,7 +26,7 @@ def parse_relative_date(time_str: str, tz: str = "Asia/Shanghai") -> datetime:
             dt = now
     return dt
 
-async def fetch_jin10_news() -> List[Dict[str, Any]]:
+async def fetch_jin10_news() :
     timestamp = int(time.time() * 1000)
     url = f"https://www.jin10.com/flash_newest.js?t={timestamp}"
     resp = await fetch_url(url)
@@ -66,7 +66,7 @@ async def fetch_jin10_news() -> List[Dict[str, Any]]:
             }
         }
         result.append(item)
-    return result
+    return {"jin10" : result}
 
 if __name__ == "__main__":
     news_items = asyncio.run(fetch_jin10_news())

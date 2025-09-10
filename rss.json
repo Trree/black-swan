@@ -1,6 +1,6 @@
 {
   "rss": {
-    "bloomberg": "https://bloombergnew.buzzing.cc/feed.xml",
+    "bloomberg": "http://www.bloomberg.com/feeds/podcasts/view.xml",
     "seeking": "https://seekingalpha.com/feed.xml"
   }
 }

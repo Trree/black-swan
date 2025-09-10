@@ -23,7 +23,7 @@ async def fetch_toutiao_hot_events():
             }
         }
         result.append(item)
-    return result
+    return {"toutiao" : result}
 
 # Example usage
 if __name__ == "__main__":
